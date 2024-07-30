@@ -7,48 +7,75 @@ const textoResultado = document.querySelector(".texto-resultado");
 
 const perguntas = [
     {
-        enunciado: "Assim que saiu da escola você se depara com uma nova tecnologia, um chat que consegue responder todas as dúvidas que uma pessoa pode ter, ele também gera imagens e áudios hiper-realistas. Qual o primeiro pensamento?",
+        enunciado: "Você está participando de um workshop sobre o futuro da sustentabilidade e aprende sobre novas tecnologias verdes. Qual o seu primeiro pensamento?",
         alternativas: [
-            "Isso é assustador!",
-            "Isso é maravilhoso!"
+            "Isso é muito promissor!",
+            "Isso pode ser difícil de implementar."
         ]
     },
     {
-        enunciado: "Com a descoberta desta tecnologia, chamada Inteligência Artificial (IA), uma professora de tecnologia da escola decidiu fazer uma sequência de aulas sobre esta tecnologia. No fim de uma aula ela pede que você escreva um trabalho sobre o uso de IA em sala de aula. Qual atitude você toma?",
+        enunciado: "Aproveitando o workshop, o instrutor pede que você escreva um ensaio sobre o impacto das novas tecnologias verdes no meio ambiente. Qual atitude você toma?",
         alternativas: [
-            "Utiliza uma ferramenta de busca na internet que utiliza IA para que ela ajude a encontrar informações relevantes para o trabalho e explique numa linguagem que facilite o entendimento.",
-            "Escreve o trabalho com base nas conversas que teve com colegas, algumas pesquisas na internet e conhecimentos próprios sobre o tema.",
+            "Utiliza ferramentas de pesquisa online que ajudam a compilar dados e apresentar informações de maneira clara.",
+            "Escreve o ensaio com base em discussões com colegas, algumas pesquisas na internet e conhecimento pessoal sobre o tema."
         ]
     },
     {
-        enunciado: "Após a elaboração do trabalho, a professora realizou um debate entre a turma para entender como foi realizada a pesquisa e escrita. Nessa conversa também foi levantado um ponto muito importante: como a IA impacta o trabalho do futuro. Nesse debate, como você se posiciona?",
+        enunciado: "Durante a apresentação do ensaio, há um debate sobre como as tecnologias verdes impactarão o mercado de trabalho. Como você se posiciona?",
         alternativas: [
-            "Defende a ideia de que a IA pode criar novas oportunidades de emprego e melhorar habilidades humanas.",
-            "Me preocupo com as pessoas que perderão seus empregos para máquinas e defendem a importância de proteger os trabalhadores."
+            "Defende a ideia de que as tecnologias verdes criarão novas oportunidades de emprego e promoverão um futuro sustentável.",
+            "Preocupa-se com a possibilidade de que a transição para tecnologias verdes possa resultar na perda de empregos e defende a necessidade de treinamento para trabalhadores."
         ]
     },
     {
-        enunciado: "Ao final da discussão, você precisou criar uma imagem no computador que representasse o que pensa sobre IA. E agora?",
+        enunciado: "Ao final do debate, você é solicitado a criar uma representação visual das tecnologias verdes. O que você faz?",
         alternativas: [
-            "Criar uma imagem utilizando uma plataforma de design como o Paint.",
-            "Criar uma imagem utilizando um gerador de imagem de IA."
+            "Cria uma imagem utilizando um software de design gráfico.",
+            "Utiliza uma ferramenta de IA para gerar uma imagem que represente as tecnologias verdes."
         ]
     },
     {
-        enunciado: "Você tem um trabalho em grupo de biologia para entregar na semana seguinte, o andamento do trabalho está um pouco atrasado e uma pessoa do seu grupo decidiu fazer com ajuda de uma IA. O problema é que o trabalho está totalmente igual ao do chat. O que você faz?",
+        enunciado: "Você tem um projeto em grupo sobre sustentabilidade para entregar na próxima semana. O andamento do projeto está atrasado e um membro do grupo usou uma IA para gerar conteúdo. O que você faz?",
         alternativas: [
-           "Escrever comandos para o chat é uma forma de contribuir com o trabalho, por isso não é um problema utilizar o texto inteiro.",
-            "O chat pode ser uma tecnologia muito avançada, mas é preciso manter a atenção pois toda máquina erra, por isso revisar o trabalho e contribuir com as perspectivas pessoais é essencial."
+            "Considera o conteúdo gerado pela IA como uma contribuição válida e o utiliza como está.",
+            "Reconhece que a IA é uma ferramenta útil, mas revisa o conteúdo e adiciona perspectivas pessoais para garantir que o trabalho reflita o esforço do grupo."
         ]
     },
 ];
 
 let atual = 0;
-let perguntaAtual;
+let respostas = [];
 
 function mostraPergunta() {
-    perguntaAtual = perguntas[atual];
-    caixaPerguntas.textContent = perguntaAtual.enunciado;
+    if (atual < perguntas.length) {
+        perguntaAtual = perguntas[atual];
+        caixaPerguntas.textContent = perguntaAtual.enunciado;
+        caixaAlternativas.innerHTML = ""; // Limpa alternativas anteriores
+
+        perguntaAtual.alternativas.forEach((alternativa, index) => {
+            const btnAlternativa = document.createElement("button");
+            btnAlternativa.textContent = alternativa;
+            btnAlternativa.addEventListener("click", () => selecionarAlternativa(index));
+            caixaAlternativas.appendChild(btnAlternativa);
+        });
+    } else {
+        mostraResultado();
+    }
 }
 
+function selecionarAlternativa(index) {
+    respostas[atual] = index;
+    atual++;
+    mostraPergunta();
+}
+
+function mostraResultado() {
+    caixaPrincipal.style.display = "none";
+    caixaResultado.style.display = "block";
+    
+    // Aqui você pode fazer algo com as respostas, como calcular um resultado
+    textoResultado.textContent = `Você respondeu ${respostas.length} perguntas.`;
+}
+
+// Inicializa mostrando a primeira pergunta
 mostraPergunta();
