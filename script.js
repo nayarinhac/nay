@@ -1,4 +1,3 @@
-
 const caixaPrincipal = document.querySelector(".caixa-principal");
 const caixaPerguntas = document.querySelector(".caixa-perguntas");
 const caixaAlternativas = document.querySelector(".caixa-alternativas");
@@ -7,75 +6,107 @@ const textoResultado = document.querySelector(".texto-resultado");
 
 const perguntas = [
     {
-        enunciado: "Você está participando de um workshop sobre o futuro da sustentabilidade e aprende sobre novas tecnologias verdes. Qual o seu primeiro pensamento?",
+        enunciado: "Você acaba de descobrir um novo chat que pode responder a qualquer pergunta e gerar imagens e áudios realistas. Qual é a sua reação inicial?",
         alternativas: [
-            "Isso é muito promissor!",
-            "Isso pode ser difícil de implementar."
+            {
+                texto: "Isso parece meio perturbador!",
+                afirmacao: "Você achou a nova tecnologia perturbadora."
+            },
+            {
+                texto: "Isso é incrível e revolucionário!",
+                afirmacao: "Você achou a nova tecnologia incrível e revolucionária."
+            }
         ]
     },
     {
-        enunciado: "Aproveitando o workshop, o instrutor pede que você escreva um ensaio sobre o impacto das novas tecnologias verdes no meio ambiente. Qual atitude você toma?",
+        enunciado: "Com a chegada da Inteligência Artificial, sua professora de tecnologia decidiu que você deve escrever um trabalho sobre o uso de IA na educação. Como você procede?",
         alternativas: [
-            "Utiliza ferramentas de pesquisa online que ajudam a compilar dados e apresentar informações de maneira clara.",
-            "Escreve o ensaio com base em discussões com colegas, algumas pesquisas na internet e conhecimento pessoal sobre o tema."
+            {
+                texto: "Usa uma ferramenta de busca que utiliza IA para ajudar a coletar informações e explicar de forma simples.",
+                afirmacao: "Você usou uma ferramenta de busca com IA para facilitar a coleta e explicação das informações."
+            },
+            {
+                texto: "Pesquisa o tema por conta própria com base em conversas, pesquisas e conhecimentos prévios.",
+                afirmacao: "Você fez a pesquisa e escreveu o trabalho usando seus próprios conhecimentos e fontes."
+            }
         ]
     },
     {
-        enunciado: "Durante a apresentação do ensaio, há um debate sobre como as tecnologias verdes impactarão o mercado de trabalho. Como você se posiciona?",
+        enunciado: "Após entregar o trabalho, sua professora organiza um debate sobre o impacto da IA no futuro do trabalho. Como você se posiciona nesse debate?",
         alternativas: [
-            "Defende a ideia de que as tecnologias verdes criarão novas oportunidades de emprego e promoverão um futuro sustentável.",
-            "Preocupa-se com a possibilidade de que a transição para tecnologias verdes possa resultar na perda de empregos e defende a necessidade de treinamento para trabalhadores."
+            {
+                texto: "Acredito que a IA trará novas oportunidades de trabalho e desenvolverá novas habilidades.",
+                afirmacao: "Você acredita que a IA criará novas oportunidades e aprimorará habilidades."
+            },
+            {
+                texto: "Estou preocupado com a substituição de empregos por máquinas e defendo a proteção dos trabalhadores.",
+                afirmacao: "Você expressou preocupação com a substituição de empregos e a necessidade de proteger os trabalhadores."
+            }
         ]
     },
     {
-        enunciado: "Ao final do debate, você é solicitado a criar uma representação visual das tecnologias verdes. O que você faz?",
+        enunciado: "Depois da discussão, você precisa criar uma imagem que expresse seu ponto de vista sobre a IA. Qual ferramenta você escolhe?",
         alternativas: [
-            "Cria uma imagem utilizando um software de design gráfico.",
-            "Utiliza uma ferramenta de IA para gerar uma imagem que represente as tecnologias verdes."
+            {
+                texto: "Crio a imagem usando um software de design tradicional, como o Paint.",
+                afirmacao: "Você usou um software de design tradicional para criar sua imagem."
+            },
+            {
+                texto: "Utilizo um gerador de imagens baseado em IA para criar a imagem.",
+                afirmacao: "Você usou um gerador de imagens baseado em IA para criar sua imagem."
+            }
         ]
     },
     {
-        enunciado: "Você tem um projeto em grupo sobre sustentabilidade para entregar na próxima semana. O andamento do projeto está atrasado e um membro do grupo usou uma IA para gerar conteúdo. O que você faz?",
+        enunciado: "Você tem um projeto de biologia em grupo para entregar e um membro do grupo usou IA para concluir o trabalho. O trabalho ficou idêntico ao gerado pelo chat. O que você faz?",
         alternativas: [
-            "Considera o conteúdo gerado pela IA como uma contribuição válida e o utiliza como está.",
-            "Reconhece que a IA é uma ferramenta útil, mas revisa o conteúdo e adiciona perspectivas pessoais para garantir que o trabalho reflita o esforço do grupo."
+            {
+                texto: "Acredito que usar o texto gerado pelo chat é aceitável e não vejo problema em utilizá-lo diretamente.",
+                afirmacao: "Você considera aceitável usar diretamente o texto gerado pelo chat."
+            },
+            {
+                texto: "Embora a IA seja avançada, é importante revisar o trabalho e adicionar suas próprias contribuições e análises.",
+                afirmacao: "Você acredita que é importante revisar e personalizar o trabalho, mesmo com a ajuda da IA."
+            }
         ]
-    },
+    }
 ];
 
 let atual = 0;
-let respostas = [];
+let perguntaAtual;
+let historiaFinal = "";
 
 function mostraPergunta() {
-    if (atual < perguntas.length) {
-        perguntaAtual = perguntas[atual];
-        caixaPerguntas.textContent = perguntaAtual.enunciado;
-        caixaAlternativas.innerHTML = ""; // Limpa alternativas anteriores
-
-        perguntaAtual.alternativas.forEach((alternativa, index) => {
-            const btnAlternativa = document.createElement("button");
-            btnAlternativa.textContent = alternativa;
-            btnAlternativa.addEventListener("click", () => selecionarAlternativa(index));
-            caixaAlternativas.appendChild(btnAlternativa);
-        });
-    } else {
+    if (atual >= perguntas.length) {
         mostraResultado();
+        return;
+    }
+    perguntaAtual = perguntas[atual];
+    caixaPerguntas.textContent = perguntaAtual.enunciado;
+    caixaAlternativas.textContent = "";
+    mostraAlternativas();
+}
+
+function mostraAlternativas() {
+    for (const alternativa of perguntaAtual.alternativas) {
+        const botaoAlternativas = document.createElement("button");
+        botaoAlternativas.textContent = alternativa.texto;
+        botaoAlternativas.addEventListener("click", () => respostaSelecionada(alternativa));
+        caixaAlternativas.appendChild(botaoAlternativas);
     }
 }
 
-function selecionarAlternativa(index) {
-    respostas[atual] = index;
+function respostaSelecionada(opcaoSelecionada) {
+    const afirmacao = opcaoSelecionada.afirmacao;
+    historiaFinal += afirmacao + " ";
     atual++;
     mostraPergunta();
 }
 
 function mostraResultado() {
-    caixaPrincipal.style.display = "none";
-    caixaResultado.style.display = "block";
-    
-    // Aqui você pode fazer algo com as respostas, como calcular um resultado
-    textoResultado.textContent = `Você respondeu ${respostas.length} perguntas.`;
+    caixaPerguntas.textContent = "Em 2049...";
+    textoResultado.textContent = historiaFinal;
+    caixaAlternativas.textContent = "";
 }
 
-// Inicializa mostrando a primeira pergunta
 mostraPergunta();
